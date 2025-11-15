@@ -1,0 +1,67 @@
+version: '3.9'
+
+services:
+
+  mysql:
+    image: mysql:5.7
+    container_name: epicbook_db
+    restart: always
+    env_file:
+      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "${MYSQL_PORT}:${MYSQL_PORT}"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./db:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+    networks:
+      - internal
+
+
+  backend:
+    build: .
+    container_name: epicbook_backend
+    env_file:
+      - .env
+    environment:
+      DB_HOST: mysql      # MUST be service name
+      DB_USER: ${MYSQL_USER}
+      DB_PASS: ${MYSQL_PASSWORD}
+      DB_NAME: ${MYSQL_DATABASE}
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    networks:
+      - internal
+
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx_reverse_proxy
+    ports:
+      - "80:80"
+    volumes:
+      - ./reverse-proxy/default.conf.template:/etc/nginx/templates/default.conf.template
+    depends_on:
+      - backend
+    networks:
+      - internal
+
+
+networks:
+  internal:
+
+volumes:
+  db_data:

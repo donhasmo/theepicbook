@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pravinmishraaws/theepicbook.git"
+    "url": "git+https://github.com/donhasmo/theepicbook.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/pravinmishraaws/theepicbook/issues"
+    "url": "https://github.com/donhasmo/theepicbook/issues"
   },
-  "homepage": "https://github.com/pravinmishraaws/theepicbook#readme",
+  "homepage": "https://github.com/donhasmo/theepicbook#readme",
   "dependencies": {
     "@handlebars/allow-prototype-access": "^1.0.3",
     "accounting": "^0.4.1",
